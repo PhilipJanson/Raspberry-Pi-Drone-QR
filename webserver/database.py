@@ -6,11 +6,8 @@ import json
 
 app = Flask(__name__)
 CORS(app)
-
-
 redis_server = redis.Redis(
     "localhost", decode_responses=True, charset="unicode_escape")
-
 
 
 @app.route('/drone', methods=['POST'])

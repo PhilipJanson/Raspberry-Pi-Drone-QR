@@ -1,6 +1,6 @@
 from cmath import pi
 from flask import Flask, request, render_template, jsonify
-from flask.globals import current_app 
+from flask.globals import current_app
 from geopy.geocoders import Nominatim
 from flask_cors import CORS
 import redis
@@ -10,28 +10,27 @@ import requests
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 app.secret_key = 'dljsaklqk24e21cjn!Ew@@dsa5'
-
-# change this to connect to your redis server
-# ===============================================
-redis_server = redis.Redis("localhost", decode_responses=True, charset="unicode_escape")
-# ===============================================
-
+redis_server = redis.Redis(
+    "localhost", decode_responses=True, charset="unicode_escape")
 geolocator = Nominatim(user_agent="my_request")
 region = ", Lund, Skåne, Sweden"
 
 # Example to send coords as request to the drone
+
+
 def send_request(drone_url, coords):
     with requests.Session() as session:
         resp = session.post(drone_url, json=coords)
-        
+
 
 @app.route('/planner', methods=['POST'])
 def route_planner():
-    Addresses =  json.loads(request.data.decode())
+    Addresses = json.loads(request.data.decode())
     FromAddress = Addresses['faddr']
     ToAddress = Addresses['taddr']
     from_location = geolocator.geocode(FromAddress + region, timeout=None)
     to_location = geolocator.geocode(ToAddress + region, timeout=None)
+
     if from_location is None:
         message = 'Departure address not found, please input a correct address'
         return message
@@ -49,8 +48,8 @@ def route_planner():
         # if no drone is availble:
         if(redis_server.get('drone1_status') == 'idle'):
             message = 'Got address and sent request to the drone'
-            DRONE_URL = 'http://' + redis_server.get('drone1_IP') +':5000'
-            send_request(DRONE_URL, coords)           
+            DRONE_URL = 'http://' + redis_server.get('drone1_IP') + ':5000'
+            send_request(DRONE_URL, coords)
         elif(redis_server.get('drone2_status') == 'idle'):
             message = 'Got address and sent request to the drone'
             DRONE_URL = 'http://' + redis_server.get('drone2_IP') + ':5000'
@@ -58,7 +57,6 @@ def route_planner():
         else:
             message = 'No available drone, try later'
 
-            
         return message
         # ======================================================================
 
