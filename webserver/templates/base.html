@@ -38,10 +38,14 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbar">
+        {% if user.is_authenticated %}
         <a class="nav-item nav-link" id="home" href="/">Hem</a>
+        <a class="nav-item nav-link" id="user" href="/user">Mitt konto</a>
+        <a class="nav-item nav-link" id="logout" href="/logout">Logga Ut</a>
+        {% else %}
         <a class="nav-item nav-link" id="login" href="/login">Logga In</a>
         <a class="nav-item nav-link" id="singup" href="/signup">Skapa Konto</a>
-        <a class="nav-item nav-link" id="logout" href="/logout">Logga Ut</a>
+        {% endif %}
       </div>
     </nav>
 

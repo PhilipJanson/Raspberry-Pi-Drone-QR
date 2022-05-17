@@ -1,5 +1,6 @@
 from os import fdopen
 from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask_login import login_required, current_user
 from flask.json import jsonify
 from flask_socketio import SocketIO, emit
 import time
@@ -9,13 +10,10 @@ import json
 
 
 views = Blueprint("views", __name__)
-
-# change this so that you can connect to your redis server
-# ===============================================
 redis_server = redis.Redis("localhost", decode_responses=True, charset="unicode_escape")
-# ===============================================
 
-# Translate OSM coordinate (longitude, latitude) to SVG coordinates (x,y).
+
+# Translate OSM coordinate (longit8ude, latitude) to SVG coordinates (x,y).
 # Input coords_osm is a tuple (longitude, latitude).
 def translate(coords_osm):
     x_osm_lim = (13.143390664, 13.257501336)
@@ -35,8 +33,14 @@ def translate(coords_osm):
     return x_svg, y_svg
 
 @views.route('/', methods=['GET'])
+@login_required
 def home():
-    return render_template('index.html')
+    return render_template('index.html', user=current_user)
+
+@views.route('/user')
+@login_required
+def home():
+    return render_template('user.html', user=current_user)
 
 @views.route('/get_drones', methods=['GET'])
 def get_drones():

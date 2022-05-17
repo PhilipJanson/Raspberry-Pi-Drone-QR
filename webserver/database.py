@@ -7,11 +7,10 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-# change this to connect to your redis server
-# ===============================================
+
 redis_server = redis.Redis(
     "localhost", decode_responses=True, charset="unicode_escape")
-# ===============================================
+
 
 
 @app.route('/drone', methods=['POST'])
