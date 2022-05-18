@@ -3,10 +3,11 @@ scripts %}
 <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript">
-  function Submit() {
+  function Submit(username) {
     var from_addr = document.getElementById('faddr').value;
     var to_addr = document.getElementById('taddr').value;
-    var data = { faddr: from_addr, taddr: to_addr };
+    var username = {{user.username|tojson|safe}};
+    var data = { faddr: from_addr, taddr: to_addr, user: username};
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
@@ -57,6 +58,7 @@ scripts %}
 </script>
 
 {% endblock scripts %}{% block content %}
+<meta id="username" data="{{ user.username }}"
 <p>Current Position:</p>
 <div id="txt"></div>
 <form action="javascript:Submit()">

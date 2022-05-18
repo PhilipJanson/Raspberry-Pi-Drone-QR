@@ -39,7 +39,7 @@ def home():
 
 @views.route('/user')
 @login_required
-def home():
+def userpage():
     return render_template('user.html', user=current_user)
 
 @views.route('/get_drones', methods=['GET'])
