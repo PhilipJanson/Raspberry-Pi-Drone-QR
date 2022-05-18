@@ -56,25 +56,34 @@ scripts %}
     });
   }
 </script>
-
 {% endblock scripts %}{% block content %}
-<meta id="username" data="{{ user.username }}"
-<p>Current Position:</p>
-<div id="txt"></div>
-<form action="javascript:Submit()">
-  <label for="fname">From address:</label><br />
-  <input type="text" id="faddr" name="faddr" /><br />
-  <label for="lname">To address:</label><br />
-  <input type="text" id="taddr" name="taddr" /><br /><br />
-  <input type="submit" value="Search addresses" />
-</form>
-<object
-  id="map"
-  data="static/images/lund-map.svg"
-  type="image/svg+xml"
-></object>
-
-{% endblock content %} {% block endscripts %}
+<div class="container text-center">
+  <h1>Ny beställning</h1>
+  <form action="javascript:Submit()">
+    <label for="fname">Upphämtningsadress:</label><br />
+    <input type="text" id="faddr" name="faddr" /><br />
+    <label for="lname">Avlämningsadress:</label><br />
+    <input type="text" id="taddr" name="taddr" /><br /><br />
+    <button type="submit" class="btn btn-outline-primary">Sök adresser</button>
+  </form>
+  <br/>
+</div>
+{% endblock content %} 
+{% block map %} 
+<div class="text-center">
+  <object
+    id="map"
+    data="static/images/lund-map.svg"
+    type="image/svg+xml"
+  ></object>
+</div>
+<div class="container text-center">
+  <p>Current Position:</p>
+  <div id="txt"></div>
+  <br/>
+</div>
+{% endblock map %} 
+{% block endscripts %}
 <script>
   var set_delay = 50,
     callout = function () {

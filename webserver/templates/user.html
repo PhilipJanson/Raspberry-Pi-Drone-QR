@@ -1,12 +1,28 @@
 {% extends "base.html" %} {% block title %}Mitt konto{% endblock %} {% block content %} 
-<div>
+<div class="container">
+    <h1 class="text-center">Mitt konto</h1>
+    <h4>Mina uppgifter</h4>
     <div>Användarnamn: {{ user.username }}</div>
-    <div>ID: {{ user.id }}</div>
+    <div>User ID: {{ user.id }}</div>
+    <br/>
     <div>
-        <div>Mina beställningar:</div>
+        <h4>Mina beställningar:</h4>
         {% for order in user.orders %}
-        <div>{{order.id}}</div>
+        <div class="row align-items-center border-bottom hover">
+            <div class="col">Order ID: {{order.id}}</div>
+            {% set color = "text-danger" %}
+            {% set text = "Not Delivered" %}
+            
+            {% if order.delivered %}
+                {% set color = "text-success" %}
+                {% set text = "Delivered" %}
+            {% endif %}
+            <div class="col {{ color }}">Status: {{ text }}</div>
+        </div>
         {% endfor %}
     </div>
+    {% for i in range(20) %}
+    <br/>
+    {% endfor %}
 </div>
 {% endblock %}

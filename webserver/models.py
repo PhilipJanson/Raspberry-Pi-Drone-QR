@@ -11,4 +11,5 @@ class User(db.Model, UserMixin):
 
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    delivered = db.Column(db.Boolean)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
