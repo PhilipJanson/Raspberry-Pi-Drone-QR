@@ -40,7 +40,7 @@ def distance(_fr, _to):
     _dist = ((_to[0] - _fr[0])**2 + (_to[1] - _fr[1])**2)*10**6
     return _dist
         
-def run(id, current_coords, from_coords, to_coords, SERVER_URL):
+def run(id, current_coords, from_coords, to_coords, username, qr, SERVER_URL):
     
     drone_coords = current_coords
 
@@ -85,15 +85,19 @@ if __name__ == "__main__":
     parser.add_argument("--tlong", help ='longitude of input [to address]' ,type=float)
     parser.add_argument("--tlat", help ='latitude of input [to address]' ,type=float)
     parser.add_argument("--id", help ='drones ID' ,type=str)
+    parser.add_argument("--user", help ='username' ,type=str)
+    parser.add_argument("--qr", help ='qr code' ,type=str)
     args = parser.parse_args()
 
     current_coords = (args.clong, args.clat)
     from_coords = (args.flong, args.flat)
     to_coords = (args.tlong, args.tlat)
+    username = args.user
+    qr = args.qr
 
     print("Get New Task!")
 
-    drone_long, drone_lat = run(args.id ,current_coords, from_coords, to_coords, SERVER_URL)
+    drone_long, drone_lat = run(args.id ,current_coords, from_coords, to_coords, username, qr, SERVER_URL)
     # drone_long and drone_lat is the final location when drlivery is completed, find a way save the value, and use it for the initial coordinates of next delivery
     #=============================================================================
 
