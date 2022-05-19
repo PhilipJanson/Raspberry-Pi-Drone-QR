@@ -36,10 +36,10 @@ def route_planner():
     FromAddress = Data['faddr']
     ToAddress = Data['taddr']
     username = str(Data['user'])
-    
+
     if not username:
         return "Något gick fel, försök igen"
-    
+
     user = User.query.filter_by(username=username).first()
     from_location = geolocator.geocode(FromAddress + region, timeout=None)
     to_location = geolocator.geocode(ToAddress + region, timeout=None)
@@ -54,14 +54,16 @@ def route_planner():
         order = Order(delivered=False, user_id=user.id)
         db.session.add(order)
         db.session.commit()
-        qr = generate_qr(user, order)  
+        qr = generate_qr(user, order)
 
         data = {'from': (from_location.longitude, from_location.latitude),
-                  'to': (to_location.longitude, to_location.latitude),
-                  'username': username,
-                  'qr': qr
-                  }
-            
+                'to': (to_location.longitude, to_location.latitude),
+                'username': username,
+                'qr': qr,
+                'userid': user.id,
+                'orderid': order.id
+                }
+
         if(redis_server.get('drone1_status') == 'idle'):
             message = 'Beställning mottagen och en drönare är nu på väg.'
             DRONE_URL = 'http://' + redis_server.get('drone1_IP') + ':5000'
@@ -76,13 +78,14 @@ def generate_qr(user, order):
     import hashlib
     import qrcode
     #from PIL import Image
-    
+
     hashed_user = hashlib.sha224(str(user.id).encode('utf-8')).hexdigest()
     hashed_order = hashlib.sha224(str(order.id).encode('utf-8')).hexdigest()
-    res = (hashed_user + hashed_order)[len(hashed_user) - 8 : len(hashed_user) + 8]
-    
+    res = (hashed_user +
+           hashed_order)[len(hashed_user) - 8: len(hashed_user) + 8]
+
     print(res)
-    
+
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_H,
@@ -94,9 +97,11 @@ def generate_qr(user, order):
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white").convert('RGB')
 
-    img.save("/home/pi/Raspberry-Pi-Drone-QR/webserver/static/qr/" + str(user.id) + "_" + str(order.id) + ".png")
-    
+    img.save("/home/pi/Raspberry-Pi-Drone-QR/webserver/static/qr/" +
+             str(user.id) + "_" + str(order.id) + ".png")
+
     return res
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port='5002')

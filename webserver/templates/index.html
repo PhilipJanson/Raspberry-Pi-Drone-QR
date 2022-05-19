@@ -3,7 +3,7 @@ scripts %}
 <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript">
-  function Submit(username) {
+  function Submit() {
     var from_addr = document.getElementById('faddr').value;
     var to_addr = document.getElementById('taddr').value;
     var username = {{user.username|tojson|safe}};
@@ -66,10 +66,9 @@ scripts %}
     <input type="text" id="taddr" name="taddr" /><br /><br />
     <button type="submit" class="btn btn-outline-primary">Sök adresser</button>
   </form>
-  <br/>
+  <br />
 </div>
-{% endblock content %} 
-{% block map %} 
+{% endblock content %} {% block map %}
 <div class="text-center">
   <object
     id="map"
@@ -80,10 +79,9 @@ scripts %}
 <div class="container text-center">
   <p>Current Position:</p>
   <div id="txt"></div>
-  <br/>
+  <br />
 </div>
-{% endblock map %} 
-{% block endscripts %}
+{% endblock map %} {% block endscripts %}
 <script>
   var set_delay = 50,
     callout = function () {
