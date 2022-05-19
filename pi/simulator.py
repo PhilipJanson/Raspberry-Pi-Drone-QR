@@ -2,8 +2,36 @@ import math
 import requests
 import argparse
 from sense_hat import SenseHat
-
+import cv2
 sense = SenseHat()
+
+def detectQrCode():
+
+    # set up camera object
+    cap = cv2.VideoCapture(0)
+
+    # QR code detection object
+    detector = cv2.QRCodeDetector()
+
+    while True:
+        # get the image
+        _, img = cap.read()
+        # get bounding box coords and data
+        data, bbox, _ = detector.detectAndDecode(img)
+        
+        # if there is a bounding box, draw one, along with the data
+        if(bbox is not None):
+            for i in range(len(bbox)):
+                cv2.line(img, tuple(bbox[i][0]), tuple(bbox[(i+1) % len(bbox)][0]), color=(255,
+                         0, 255), thickness=2)
+            cv2.putText(img, data, (int(bbox[0][0][0]), int(bbox[0][0][1]) - 10), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.5, (0, 255, 0), 2)
+            if data:
+                print("data found: ", data)
+                cap.release()
+                cv2.destroyAllWindows()
+                break
+
 
 def getMovement(src, dst):
     speed = 0.00003
@@ -67,7 +95,7 @@ def run(id, current_coords, from_coords, to_coords, username, qr, SERVER_URL):
  
     # Stop and update status to database
     send_location(SERVER_URL, id=id, drone_coords=drone_coords, status='idle')
-
+    detectQrCode()
     return drone_coords[0], drone_coords[1]
    
 if __name__ == "__main__":
