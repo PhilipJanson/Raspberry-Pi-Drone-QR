@@ -1,4 +1,3 @@
-from cmath import pi
 from flask import Flask, request, render_template, jsonify
 from flask.globals import current_app
 from geopy.geocoders import Nominatim
@@ -52,22 +51,21 @@ def route_planner():
         message = 'Avlämningsadressen är inte giltig'
         return message
     else:
-        #order = Order(delivered=False, user_id=user.id)
-        #db.session.add(order)
-        #db.session.commit()
-        #qr = generate_qr(user, order)  
-        qr = 0
+        order = Order(delivered=False, user_id=user.id)
+        db.session.add(order)
+        db.session.commit()
+        qr = generate_qr(user, order)  
 
         data = {'from': (from_location.longitude, from_location.latitude),
                   'to': (to_location.longitude, to_location.latitude),
-                  'username': username
+                  'username': username,
                   'qr': qr
                   }
             
         if(redis_server.get('drone1_status') == 'idle'):
             message = 'Beställning mottagen och en drönare är nu på väg.'
             DRONE_URL = 'http://' + redis_server.get('drone1_IP') + ':5000'
-            #send_request(DRONE_URL, data)
+            send_request(DRONE_URL, data)
         else:
             message = 'Ingen drönare är tillgänglig just nu, försök igen senare.'
 
@@ -75,17 +73,30 @@ def route_planner():
 
 
 def generate_qr(user, order):
-    print(user.id, order.id)
+    import hashlib
+    import qrcode
+    #from PIL import Image
     
-    #hash user.id
-    #hash order.id
+    hashed_user = hashlib.sha224(str(user.id).encode('utf-8')).hexdigest()
+    hashed_order = hashlib.sha224(str(order.id).encode('utf-8')).hexdigest()
+    res = (hashed_user + hashed_order)[len(hashed_user) - 8 : len(hashed_user) + 8]
     
-    #generate QR code
-    #save image
+    print(res)
     
-    #return string
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_H,
+        box_size=10,
+        border=4,
+    )
+
+    qr.add_data(res)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white").convert('RGB')
+
+    img.save("/home/pi/Raspberry-Pi-Drone-QR/webserver/static/qr/" + str(user.id) + "_" + str(order.id) + ".png")
     
-    return 0
+    return res
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port='5002')

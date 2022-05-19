@@ -4,30 +4,30 @@ Drönarprojekt med QR-kodläsare
 
 Run Redis
 
-redis-start
+redis-server
 
 #####################################
 
-Run webserver/database.py
+Run main.py:
+
+export FLASK_APP=main.py
+export FLASK_ENV=development
+flask run
+
+#####################################
+
+Run database/database.py:
 
 export FLASK_APP=database.py
 export FLASK_ENV=development
-flask run --port=5001
+flask run --port=5001 --host 0.0.0.0
 
 #####################################
 
-Run webserver/route_planner.py
+Run route_planner.py:
 
 export FLASK_APP=route_planner.py
 export FLASK_ENV=development
 flask run --port=5002
-
-#####################################
-
-Run build.py
-
-export FLASK_APP=build.py
-export FLASK_ENV=development
-flask run
 
 #####################################

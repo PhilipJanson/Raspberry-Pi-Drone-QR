@@ -13,6 +13,13 @@
   background-color: #ff5e5e;
 }
 
+.img-thumbnail-custom {
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  max-width: 100%;
+  height: auto;
+}
+
 @media (min-width: 0px) {
   .text-responsive {
     font-size: 10px;

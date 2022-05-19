@@ -18,6 +18,13 @@
                 {% set text = "Delivered" %}
             {% endif %}
             <div class="col {{ color }}">Status: {{ text }}</div>
+            <div class="col">
+                <img
+                class="img-thumbnail-custom float-end"
+                src="{{ url_for('static', filename='qr/' + user.id|string + '_' + order.id|string + '.png') }}"
+                alt="Qr Code"
+                />
+            </div>
         </div>
         {% endfor %}
     </div>

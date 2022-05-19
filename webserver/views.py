@@ -1,12 +1,8 @@
-from os import fdopen
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from flask.json import jsonify
 from flask_socketio import SocketIO, emit
-import time
 import redis
-import pickle
-import json
 
 
 views = Blueprint("views", __name__)
@@ -55,10 +51,12 @@ def get_drones():
     #=============================================================================================================================================
     
     drone1_coords = translate((float(redis_server.get('drone1_longitude')), float(redis_server.get('drone1_latitude'))));
-    drone2_coords = translate((float(redis_server.get('drone2_longitude')), float(redis_server.get('drone2_latitude'))));
+    #drone2_coords = translate((float(redis_server.get('drone2_longitude')), float(redis_server.get('drone2_latitude'))));
 
-    drone_dict = {'drone1': {'longitude': drone1_coords[0], 'latitude': drone1_coords[1], 'status': redis_server.get('drone1_status')},
-                  'drone2': {'longitude': drone2_coords[0], 'latitude': drone2_coords[1], 'status': redis_server.get('drone2_status')}}
+    drone_dict = {'drone1': {'longitude': drone1_coords[0], 'latitude': drone1_coords[1], 'status': redis_server.get('drone1_status')}
+                  #'drone2': {'longitude': drone2_coords[0], 'latitude': drone2_coords[1], 'status': redis_server.get('drone2_status')}
+                  }
+    print("Hello")
     
     return jsonify(drone_dict)
 
