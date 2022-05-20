@@ -8,6 +8,9 @@ sense = SenseHat()
 
 
 def detectQrCode(qr):
+    red = (255, 0, 0)
+    green = (0, 255, 0)
+
     # set up camera object
     cap = cv2.VideoCapture(0)
 
@@ -15,25 +18,26 @@ def detectQrCode(qr):
     detector = cv2.QRCodeDetector()
 
     while True:
-        # get the image
         _, img = cap.read()
-        # get bounding box coords and data
         data, bbox, _ = detector.detectAndDecode(img)
-
-        # if there is a bounding box, draw one, along with the data
         if(bbox is not None):
             for i in range(len(bbox)):
-                cv2.line(img, tuple(bbox[i][0]), tuple(bbox[(i+1) % len(bbox)][0]), color=(255,
-                         0, 255), thickness=2)
-            cv2.putText(img, data, (int(bbox[0][0][0]), int(bbox[0][0][1]) - 10), cv2.FONT_HERSHEY_SIMPLEX,
-                        0.5, (0, 255, 0), 2)
+                cv2.line(img, tuple(bbox[i][0]), tuple(bbox[(i+1) % len(bbox)][0]), color=(255, 0, 255), thickness=2)
+            cv2.putText(img, data, (int(bbox[0][0][0]), int(bbox[0][0][1]) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            
             if data:
                 print("data found: ", data)
-                cap.release()
-                cv2.destroyAllWindows()
-                break
-
-    return True
+                if data == qr:
+                    sense.show_message("QR-kod giltig", scroll_speed=0.06, text_colour=green)
+                    cap.release()
+                    cv2.destroyAllWindows()
+                    return True
+                else:
+                    sense.show_message("QR-kod ogiltig", scroll_speed=0.06, text_colour=red)
+                    return detectQrCode(qr)
+        cv2.imshow("code detector", img)
+        if(cv2.waitKey(1) == ord("q")):
+            break
 
 
 def getMovement(src, dst):
@@ -105,8 +109,8 @@ def run(id, current_coords, from_coords, to_coords, username, qr, userid, orderi
         send_location(SERVER_URL, id=id,
                       drone_coords=drone_coords, status='busy', userid=userid, orderid=orderid, finished=False)
 
-    sense.show_message("Hej " + username + "!")
-    sense.show_message("Scanna din QR-kod")
+    sense.show_message("Hej " + username + "!", scroll_speed=0.06)
+    sense.show_message("Skanna din QR-kod", scroll_speed=0.06)
 
     # Stop and update status to database
     send_location(SERVER_URL, id=id, drone_coords=drone_coords,

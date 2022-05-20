@@ -26,7 +26,10 @@ file.close()
 drone_info = {'id': drone_id,
               'longitude': current_longitude,
               'latitude': current_latitude,
-              'status': 'idle'
+              'status': 'idle',
+              'userid': '',
+              'orderid': '',
+              'finished': False
               }
 
 # Fill in the IP address of server, and send the initial location of the drone to the SERVER
@@ -63,8 +66,8 @@ def main():
                                                  '--id', drone_id,
                                                  '--user', username,
                                                  '--qr', qr,
-                                                 '--userid', userid,
-                                                 '--orderid', orderid
+                                                 '--userid', str(userid),
+                                                 '--orderid', str(orderid)
                       ])
 
     return 'New route received'

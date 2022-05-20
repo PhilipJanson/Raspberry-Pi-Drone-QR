@@ -31,3 +31,8 @@ export FLASK_ENV=development
 flask run --port=5002
 
 #####################################
+
+To run client drone
+export FLASK_APP=drone.py
+export FLASK_ENV=development
+flask run --host 0.0.0.0
