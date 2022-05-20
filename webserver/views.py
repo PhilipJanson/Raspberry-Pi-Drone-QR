@@ -49,35 +49,21 @@ def update_status():
     data = request.get_json()
     userid = data['userid']
     orderid = data['orderid']
-    order = Order.query.get(orderid)
+    order = Order.query.get(int(orderid))
 
     if order:
-        if order.user_id == userid:
+        if order.user_id == int(userid):
             order.delivered = True
             db.session.commit()
-            flash("Paketet är levererat", category="success")
 
     return jsonify({})
 
 
 @views.route('/get_drones', methods=['GET'])
 def get_drones():
-    # =============================================================================================================================================
-    # Get the information of all the drones from redis server and update the dictionary `drone_dict' to create the response
-    # drone_dict should have the following format:
-    # e.g if there are two drones in the system with IDs: DRONE1 and DRONE2
-    # drone_dict = {'DRONE_1':{'longitude': drone1_logitude_svg, 'latitude': drone1_logitude_svg, 'status': drone1_status},
-    #               'DRONE_2': {'longitude': drone2_logitude_svg, 'latitude': drone2_logitude_svg, 'status': drone2_status}
-    #              }
-    # use function translate() to covert the coodirnates to svg coordinates
-    # =============================================================================================================================================
-
     drone1_coords = translate((float(redis_server.get('drone1_longitude')), float(
         redis_server.get('drone1_latitude'))))
-    #drone2_coords = translate((float(redis_server.get('drone2_longitude')), float(redis_server.get('drone2_latitude'))));
 
-    drone_dict = {'drone1': {'longitude': drone1_coords[0], 'latitude': drone1_coords[1], 'status': redis_server.get('drone1_status')}
-                  # 'drone2': {'longitude': drone2_coords[0], 'latitude': drone2_coords[1], 'status': redis_server.get('drone2_status')}
-                  }
+    drone_dict = {'drone1': {'longitude': drone1_coords[0], 'latitude': drone1_coords[1], 'status': redis_server.get('drone1_status')}}
 
     return jsonify(drone_dict)

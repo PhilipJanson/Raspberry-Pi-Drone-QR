@@ -29,8 +29,7 @@ def drone():
 
     if finished:
         with requests.Session() as session:
-            data = {'id': id,
-                    'userid': userid,
+            data = {'userid': userid,
                     'orderid': orderid
                     }
             resp = session.post("http://0.0.0.0:5000/update_status", json=data)
